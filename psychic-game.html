@@ -1,0 +1,131 @@
+<html lang="en-us">
+    <head>
+        <title>Psychic Game</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+    </head>
+
+    <body>
+        <div class="container">
+        
+            <div class="jumbotron">
+                <h1>Guess what letter I'm thinking of.</h1>        
+            </div>
+
+                <p> Wins: <span id= "wins" > 0 </span> </p>
+                <p> Losses: <span id="losses"> 0 </span> </p>
+                <p> Guesses Left: <span id= "guessesLeft"> 9 </span> </p>
+                <p> Your Guesses so far: <span id= "guessAttempts">  </span> </p>
+
+        </div>    
+
+        <script>
+    
+            /* Psychic game Pseudo code
+
+                Objectives: 
+                    Output
+                        Present the challenge to the user
+
+                        Scoreboard
+                            Keep track of wins
+                            Keep track of losses
+
+                        Guess log
+                            Guesses left will start at 9.
+
+                    Input
+                        Capture user input on keyboard
+                            Capture keyboard input when key is pressed. Using toLowercase because I don't care about the capitalization.
+                                document.onkeyup= function(event) { ... }
+
+                            When a key is pressed
+                                store what key was pressed in userKey variable. ->  var userKey= event.key.toLowercase();
+                                each time the key is pressed, -1 from the guessAttempts variable.
+
+                    Process
+                        Compare user key to random computer-generated key (RNG. I am too familiar with RNG in gacha.)
+                            if user key = computer generated key, add +1 to the wins variable
+                            if user key != computer generated key, add +1 to the losses variable
+
+                        Make sure all records (wins, losses, guesses left, guessAttempts) are shoved into the appropriate spans
+
+                        Make sure that the whole game loops without refreshing when all 9 tries are gone.
+            */
+
+            // Global Variables
+                // Scoreboard variables
+                    var wins= 0;
+                    var losses = 0;
+
+                // User vs Comp
+                    var userGuess;
+                    var computerRnG;
+                    var computerGuess;
+
+                // Guess Log variables
+                    var guessesLeft= 9;
+                        
+
+            //  Local variable?
+                function computerLetter() {
+                        computerRnG = Math.floor((Math.random() * 26) + 97); // This RNG is based on utf-8 number range for letters.
+                        computerGuess= String.fromCharCode(computerRnG);  // This is to convert the math number into a letter character.
+                        console.log(computerGuess); // This console.log ensures that there is a starting computer letter selected before the game even really starts.
+                    }
+                        
+        
+            // Begin Game functions
+
+            function gameStart() {
+                computerLetter();
+                wins= 0;
+                losses = 0;
+                guessesLeft= 9;
+                guessAttempts= ""; // Sooo, I'm not sure how to get it to show up as a fully array yet. It just disappears with each new key press.
+            }
+
+
+            // User key capture and comparing block
+                document.onkeyup= function (event) {
+
+                userGuess= event.key.toLowerCase(); // capture what was pressed. Then convert to lowercase.
+                    console.log(userGuess)
+                    document.querySelector("#guessAttempts").innerHTML= userGuess;
+                
+            // Comparing, updating wins and losses 
+
+                if (guessesLeft > 0 && userGuess === computerGuess) {
+                　　console.log("Match!");
+                    wins++;
+                    document.querySelector("#wins").innerHTML = wins; 
+                    guessesLeft--;
+                    document.querySelector("#guessesLeft").innerHTML= guessesLeft;
+                }
+
+                if (guessesLeft > 0 && userGuess !== computerGuess) {
+                    console.log("Wrong!");
+                    losses++;
+                    document.querySelector("#losses").innerHTML= losses;
+                    guessesLeft--;
+                    document.querySelector("#guessesLeft").innerHTML= guessesLeft;
+                }
+
+                computerLetter(); // Set this up so a fresh new RNG computer letter is ready for the next guess.
+
+                if (guessesLeft == 0) {
+                    gameStart();  // This is at the bottom because Javascript runs from top to bottom. The placement here ensures that it restarts the game anew when guesses left = 0.
+                 }
+
+            }
+
+        </script>
+
+    </body>
+
+
+
+
+</html>
+
+
